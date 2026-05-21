@@ -21,8 +21,8 @@ const Navbar = () => {
       <div className="navbar-brand">
         <div className="brand-icon">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-            <path d="M9 11l3 3L22 4" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-            <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+            <path d="M9 11l3 3L22 4" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
           </svg>
         </div>
         <span className="brand-name">TaskFlow</span>
@@ -31,7 +31,7 @@ const Navbar = () => {
       <div className="navbar-links">
         <Link to="/dashboard" className={`nav-link ${isActive('/dashboard') ? 'active' : ''}`}>Dashboard</Link>
         {isAdmin && <Link to="/admin" className={`nav-link ${isActive('/admin') ? 'active' : ''}`}>Admin Panel</Link>}
-        <a href="http://localhost:5000/api-docs" target="_blank" rel="noreferrer" className="nav-link">API Docs</a>
+        <a href={`${import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace('/api/v1', '') : 'http://localhost:5000'}/api-docs`} target="_blank" rel="noreferrer" className="nav-link">API Docs</a>
       </div>
 
       <div className="navbar-user">
@@ -42,7 +42,7 @@ const Navbar = () => {
         </div>
         <button className="btn-logout" onClick={handleLogout} title="Logout">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-            <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </button>
       </div>
