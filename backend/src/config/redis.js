@@ -1,20 +1,29 @@
-const Redis = require('ioredis');
 const logger = require('../utils/logger');
 
-const redisClient = new Redis(process.env.REDIS_URL || 'redis://localhost:6379', {
-  maxRetriesPerRequest: null,
-  retryStrategy(times) {
-    const delay = Math.min(times * 50, 2000);
-    return delay;
-  },
-});
+let redisClient;
 
-redisClient.on('connect', () => {
-  logger.info('🟢 Redis Connected successfully');
-});
+if (process.env.REDIS_URL) {
+  const Redis = require('ioredis');
+  redisClient = new Redis(process.env.REDIS_URL, {
+    maxRetriesPerRequest: null,
+    retryStrategy(times) {
+      if (times > 10) return null; // Stop retrying after 10 attempts
+      return Math.min(times * 50, 2000);
+    },
+  });
 
-redisClient.on('error', (err) => {
-  logger.error(`🔴 Redis connection error: ${err.message}`);
-});
+  redisClient.on('connect', () => logger.info('🟢 Redis Connected successfully'));
+  redisClient.on('error', (err) => logger.error(`🔴 Redis connection error: ${err.message}`));
+} else {
+  logger.info('ℹ️  REDIS_URL not set — running without Redis cache');
+  // Graceful no-op stub so the rest of the app works unchanged
+  redisClient = {
+    get: async () => null,
+    setex: async () => { },
+    del: async () => { },
+    pipeline: () => ({ del: () => { }, exec: async () => { } }),
+    scanStream: () => { const s = new (require('stream').Readable)({ objectMode: true, read() { this.push(null); } }); return s; },
+  };
+}
 
 module.exports = redisClient;

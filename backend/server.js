@@ -25,8 +25,16 @@ connectDB();
 // Security middleware
 app.use(helmet());
 app.use(mongoSanitize());
+const allowedOrigins = (process.env.FRONTEND_URL || 'http://localhost:5173')
+  .split(',')
+  .map((o) => o.trim());
+
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+  origin(origin, cb) {
+    // Allow requests with no origin (mobile apps, Postman, health checks)
+    if (!origin || allowedOrigins.includes(origin)) return cb(null, true);
+    cb(new Error('Not allowed by CORS'));
+  },
   credentials: true,
 }));
 app.use(compression());

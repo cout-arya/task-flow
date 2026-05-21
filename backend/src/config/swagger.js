@@ -13,10 +13,10 @@ const options = {
       },
     },
     servers: [
-      {
-        url: 'http://localhost:5000/api/v1',
-        description: 'Development Server',
-      },
+      ...(process.env.NODE_ENV === 'production' && process.env.RENDER_EXTERNAL_URL
+        ? [{ url: `${process.env.RENDER_EXTERNAL_URL}/api/v1`, description: 'Production Server' }]
+        : [{ url: 'http://localhost:5000/api/v1', description: 'Development Server' }]
+      ),
     ],
     components: {
       securitySchemes: {
